@@ -1,6 +1,7 @@
 const mealsEl = document.getElementById('meals');
 const favoriteContainer = document.getElementById('fav-meals')
 
+const form=document.getElementById("form");
 const searchTerm = document.getElementById("search-term");
 const searchbtn = document.getElementById("search");
 
@@ -14,34 +15,27 @@ fetchFavMeals();
 // it is the async function that fetches the random food item 
 async function getRandomMeal() {
     const resp = await fetch("https://www.themealdb.com/api/json/v1/1/random.php");
-
     // only getting the first element of the array list
     const respData = await resp.json();
     const randomMeal = respData.meals[0]
     console.log(randomMeal)
-
     addMeal(randomMeal, true);
 }
 
+//function for fetching the food item by the id
 async function getMealById(id) {
-
     const resp = await fetch("https://www.themealdb.com/api/json/v1/1/lookup.php?i=" + id);
-
     const respData = await resp.json();
     const meals = respData.meals[0];
-
     return meals
 }
 
+//function for fetching the food item using the search
 async function getMealsBySearch(term) {
-
     const resp = await fetch("https://www.themealdb.com/api/json/v1/1/search.php?s=" + term);
-
     const respData = await resp.json();
     const meals = respData.meals;
-
     return meals;
-
 }
 
 //by defualt the randomness is false
@@ -117,7 +111,7 @@ async function fetchFavMeals() {
     favoriteContainer.innerHTML = "";
     const mealIds = getMealsLS();
 
-    const meals = [];
+    // const meals = [];
     for (let i = 0; i < mealIds.length; i++) {
         const mealId = mealIds[i];
 
@@ -125,7 +119,7 @@ async function fetchFavMeals() {
         addMealFav(meal);
     }
 
-    console.log(meals);
+    // console.log(meals);
 }
 
 // creating the top most fav meal section using the below function
@@ -149,10 +143,6 @@ function addMealFav(mealData) {
     favmeal.children[0].addEventListener('click',()=>{
         showMealInfo(mealData);
     });
-    favmeal.children[1].addEventListener('click',()=>{
-        showMealInfo(mealData);
-    });
-
     console.log(favmeal.children[0]);
 
     favoriteContainer.appendChild(favmeal);
@@ -199,7 +189,8 @@ function showMealInfo(mealData){
     mealPopup.classList.remove('hidden');
 }
 
-searchbtn.addEventListener('click', async () => {
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
     //cleaning the inner container
     mealsEl.innerHTML = '';
